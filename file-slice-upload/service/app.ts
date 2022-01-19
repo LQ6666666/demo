@@ -8,7 +8,8 @@ import cors from "@koa/cors";
 import serve from "koa-static";
 import bodyParser from "koa-bodyparser";
 
-const STATIC_SERVE = path.resolve(__dirname, '../build')
+// 静态文件服务器
+const STATIC_SERVE = path.resolve(__dirname, '../build');
 // 上传文件最终路径
 const STATIC_FILES = path.resolve(__dirname, './static/files')
 // 上传文件临时路径
@@ -82,7 +83,7 @@ router.post("/merge", async (ctx, next) => {
 
 app.use(cors());
 app.use(bodyParser());
-app.use(serve(STATIC_FILES));
+app.use(serve(STATIC_SERVE));
 app.use(router.routes());
 app.use(router.allowedMethods());
 
