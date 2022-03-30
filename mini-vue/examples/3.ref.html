@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="../packages/reactivity/dist/reactivity.global.js"></script>
+
+    <script>
+        const { ref, effect } = VueReactivity;
+        const name = ref("lq");
+        const state = ref({ age: { n: 21 } })
+
+        effect(() => {
+            document.body.innerHTML += `<h2>${name.value}</h2>`;
+        })
+
+        effect(() => {
+            document.body.innerHTML += `<h2>${state.value.age.n}</h2>`;
+        })
+
+        setTimeout(() => {
+            name.value = "kobe";
+        }, 2000);
+
+        setTimeout(() => {
+            state.value.age.n = 100;
+        }, 2000);
+    </script>
+</body>
+
+</html>
