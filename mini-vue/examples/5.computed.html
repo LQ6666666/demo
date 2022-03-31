@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script src="../packages/reactivity/dist/reactivity.global.js"></script>
+    <script>
+        const { computed, reactive, effect } = VueReactivity;
+        const state = reactive({ age: 21, name: "lq" })
+
+        // const age = computed(() => {
+        //     console.log("计算~~~");
+        //     return state.age + 100;
+        // });
+
+        const age = computed({
+            get() {
+                console.log("计算~~~");
+                return state.age + 100;
+            },
+            set(newVal) {
+                console.log("set newVal：", newVal);
+                state.age = 1000 + newVal;
+            }
+        });
+
+        effect(() => {
+            document.body.innerHTML = age.value;
+        })
+
+        console.log(age.value);
+        console.log(age.value);
+
+        setTimeout(() => {
+            age.value = 100;
+            // state.age = 100;
+        }, 2000);
+
+        setTimeout(() => {
+            console.log(age.value);
+        }, 3000);
+    </script>
+</body>
+
+</html>

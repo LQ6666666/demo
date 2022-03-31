@@ -59,7 +59,7 @@ export function trackRefValue(ref: RefBase<any>) {
     }
 }
 /** ref 触发更新 */
-export function triggerRefValue(ref: RefBase<any>, newVal: any) {
+export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
     if (ref.dep) {
         triggerEffects(ref.dep);
     }

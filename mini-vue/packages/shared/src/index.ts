@@ -1,3 +1,5 @@
+export const NOOP = () => { };
+
 export const isObject = (val: unknown): boolean => typeof val === "object" && val !== null;
 
 export const extend = Object.assign;

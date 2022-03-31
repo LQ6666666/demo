@@ -9,6 +9,7 @@
 # production
 */build
 mini-vue/packages/*/dist
+mini-vue/packages/*/node_modules
 
 # misc
 .DS_Store

@@ -2,6 +2,7 @@ import { extend, isArray } from '@vue3/shared';
 import { TrackOpTypes, TriggerOpTypes } from "./operations";
 import { createDep } from './dep';
 import { isIntegerKey } from '../../shared/src/index';
+import { ComputedRefImpl } from './computed';
 
 const targetMap = new WeakMap<any, any>();
 
@@ -29,9 +30,14 @@ export function effect(fn: any, options: any) {
     return runner;
 }
 
-export class ReactiveEffect {
+export class ReactiveEffect<T = any> {
     public dep: Set<ReactiveEffect>[];
-    constructor(public fn: () => any) {
+    computed?: ComputedRefImpl<T>;
+
+    constructor(
+        public fn: () => T,
+        public scheduler: any | null = null
+    ) {
         this.dep = [];
     }
 
@@ -118,7 +124,11 @@ export function trigger(target: object, type: TriggerOpTypes, key: unknown, newV
 
 export function triggerEffects(effects: Set<ReactiveEffect>) {
     effects.forEach(effect => {
-        effect.run();
+        if (effect.scheduler) {
+            effect.scheduler();
+        } else {
+            effect.run();
+        }
     })
 }
 

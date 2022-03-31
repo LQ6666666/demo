@@ -6,10 +6,10 @@ import {
     shallowReadonlyHandlers
 } from "./baseHandlers";
 
-const reactiveMap = new WeakMap();
-const shallowReactiveMap = new WeakMap();
-const readonlyMap = new WeakMap();
-const shallowReadonlyMap = new WeakMap();
+export const reactiveMap = new WeakMap();
+export const shallowReactiveMap = new WeakMap();
+export const readonlyMap = new WeakMap();
+export const shallowReadonlyMap = new WeakMap();
 
 export function reactive(target: any) {
     return createReactiveObject(target, false, mutableHandlers, reactiveMap);
@@ -52,3 +52,17 @@ export function createReactiveObject(target: any, isReadonly: boolean, baseHandl
 
 export const toReactive = <T extends unknown>(value: T): T =>
     isObject(value) ? reactive(value) : value;
+
+export function toRaw<T>(observed: T): T {
+    const raw = (observed as any)?.[ReactiveFlags.RAW];
+    return raw ? toRaw(raw) : observed;
+}
+
+
+export const enum ReactiveFlags {
+    SKIP = '__v_skip',// SKIP 表示不可被代理
+    IS_REACTIVE = '__v_isReactive',
+    IS_READONLY = '__v_isReadonly',
+    IS_SHALLOW = '__v_isShallow',
+    RAW = '__v_raw'// 用来获取原对象，通过访问这个属性到 get 方法里，就能拿到 get函数参数里的 target（原对象）
+}

@@ -1,5 +1,5 @@
 import { extend, isObject, isArray, isIntegerKey, hasOwn, hasChanged } from "@vue3/shared";
-import { readonly, reactive } from './reactive';
+import { readonly, reactive, ReactiveFlags, shallowReadonlyMap, readonlyMap, shallowReactiveMap, reactiveMap, } from './reactive';
 import { track, trigger } from "./effect";
 import { TrackOpTypes, TriggerOpTypes } from "./operations";
 
@@ -18,6 +18,18 @@ const shallowSet = createSetter();
 // 拦截获取
 function createGetter(isReadonly = false, shallow = false) {
     return function get(target: object, key: string | symbol, receiver: object) {
+        // key 为 ReactiveFlags.RAW 时，返回原对象
+        if (key === ReactiveFlags.RAW && receiver ===
+            (isReadonly
+                ? shallow
+                  ? shallowReadonlyMap
+                  : readonlyMap
+                : shallow
+                  ? shallowReactiveMap
+                  : reactiveMap
+            ).get(target)) {
+            return target;
+        }
         // 后续 Object 上的方法会被迁移到 Reflect 上
         // target[key] = value 可能会失败， Reflect 具有返回值
         const res = Reflect.get(target, key, receiver);
