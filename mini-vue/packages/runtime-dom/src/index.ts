@@ -60,4 +60,4 @@ function normalizeContainer(container: Element | string): Element | null {
     return container;
 }
 
-export { };
+export * from '@vue3/runtime-core'

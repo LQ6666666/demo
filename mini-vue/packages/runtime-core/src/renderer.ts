@@ -1,15 +1,17 @@
 import { ShapeFlags } from "@vue3/shared";
+import { ReactiveEffect } from "@vue3/reactivity";
 import { createAppAPI } from "./apiCreateApp";
 import { createComponentInstance, setupComponent } from "./component";
 import { VNode } from "./vnode";
+import { renderComponentRoot } from "./componentRenderUtils";
 
 export function createRenderer(options: any) {
     return baseCreateRenderer(options);
 }
 
 export function baseCreateRenderer(options: any) {
-    const processElement = () => {
-
+    const processElement = (n1: VNode | null, n2: VNode, container: Element) => {
+        // const el = (n2.el = n1.el)
     }
 
     const processComponent = (n1: VNode | null, n2: VNode, container: Element) => {
@@ -43,10 +45,31 @@ export function baseCreateRenderer(options: any) {
 
     /** 创建 effect 在里面调用 组件的 render 函数 */
     const setupRenderEffect = (instance: any, initialVNode: VNode, container: Element) => {
-        // console.log();
+        const componentUpdateFn = () => {
+            // 初次渲染
+            if (!instance.isMounted) {
+                // 在这个里面调用 render，不知道组件里面是啥，所以继续 patch
+                const subTree = (instance.subTree = renderComponentRoot(instance));
 
+                console.log(subTree)
+                // 因为 subTree 也是 vnode
+                patch(null, subTree, container);
 
-        instance.render(instance.proxy);
+                initialVNode.el = subTree.el;
+
+                instance.isMounted = true;
+            } else {
+                // 更新
+            }
+        }
+
+        const effect = (instance.effect = new ReactiveEffect(componentUpdateFn, () => {
+            // 源码这里传入 scheduler 是为了加入任务队列的处理，等待调用
+            instance.update();
+        }));
+
+        const update = (instance.update = effect.run.bind(effect));
+        update();
     }
 
     const patch = (n1: VNode | null, n2: VNode, container: Element) => {
@@ -57,7 +80,7 @@ export function baseCreateRenderer(options: any) {
         // 针对不同类型，做初始化操作
         if (n2.shapeFlag & ShapeFlags.ELEMENT) {
             // 处理元素
-            processElement();
+            processElement(n1, n2, container);
         } else if (n2.shapeFlag & ShapeFlags.COMPONENT) {
             // 处理组件
             processComponent(n1, n2, container);

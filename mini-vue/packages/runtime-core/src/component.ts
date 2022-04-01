@@ -20,7 +20,8 @@ export function createComponentInstance(vnode: VNode) {
         setupState: {},
         isMounted: false,
         isUnmounted: false,
-        render: null
+        render: null,
+        effect: null,
     }
 
     instance.ctx = { _: instance };

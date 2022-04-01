@@ -66,3 +66,7 @@ function normalizeChildren(vnode: any, children: unknown) {
     // 可以判断出 自己的类型和 children 的类型
     vnode.shapeFlag |= type;
 }
+
+export function isVNode(value: any): value is VNode {
+    return value ? value.__v_isVNode === true : false
+}

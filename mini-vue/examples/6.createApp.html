@@ -31,8 +31,10 @@
                 // }
 
                 return () => {
-                    console.log(state.count);
-                    return h("div", { style: { color: "red" }, xxx: "xxx" }, "hello" + state.count)
+                    return h("div", { style: { color: "red" }, xxx: "xxx" },
+                        "hello" + state.count,
+                        h("div", h("div", "我是内容")),
+                        h("div"))
                 }
             },
             // render(proxy) {

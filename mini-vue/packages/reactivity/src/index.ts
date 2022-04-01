@@ -7,7 +7,8 @@ export {
 } from "./reactive";
 
 export {
-    effect
+    effect,
+    ReactiveEffect
 } from "./effect";
 
 export {
