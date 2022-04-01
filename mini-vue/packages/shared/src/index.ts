@@ -21,3 +21,13 @@ export const hasOwn = (
 ): key is keyof typeof val => hasOwnProperty.call(val, key)
 
 export const hasChanged = (value: any, oldValue: any) => !Object.is(value, oldValue);
+
+const onRE = /^on[^a-z]/;
+export const isOn = (key: string): boolean => onRE.test(key);
+
+
+
+
+
+
+export * from "./shapeFlags";

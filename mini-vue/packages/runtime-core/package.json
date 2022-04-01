@@ -7,8 +7,7 @@
   "buildOptions": {
     "name": "VueRuntimeCore",
     "formats": [
-      "esm-bundler",
-      "cjs"
+      "esm-bundler"
     ]
   }
 }
