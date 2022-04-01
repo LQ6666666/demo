@@ -1,6 +1,6 @@
 export const NOOP = () => { };
 
-export const isObject = (val: unknown): boolean => typeof val === "object" && val !== null;
+export const isObject = (val: unknown): val is Record<any, any> => typeof val === "object" && val !== null;
 
 export const extend = Object.assign;
 
@@ -13,6 +13,10 @@ export const isNumber = (val: unknown): val is number => typeof val === "number"
 export const isString = (val: unknown): val is string => typeof val === "string";
 
 export const isIntegerKey = (key: unknown) => isString(key) && key !== 'NaN' && key[0] !== '-' && '' + parseInt(key, 10) === key;
+
+export const isPromise = <T = any>(val: unknown): val is Promise<T> => {
+    return isObject(val) && isFunction(val.then) && isFunction(val.catch)
+}
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export const hasOwn = (

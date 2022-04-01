@@ -6,6 +6,7 @@ export interface VNode {
     props: any,
     children: any,
     shapeFlag: number,
+    component: any,
     key: null | string | symbol | number,
     el: null | Element,
     __v_isVNode: boolean,
@@ -35,6 +36,8 @@ export function createBaseVNode(type: any, props: any, children: unknown = null,
         type,
         props,
         children,
+        // 存放组件对应的实例
+        component: null,
         shapeFlag,
         // diff 算法会用到 key
         key: props?.key ?? null,

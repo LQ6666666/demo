@@ -9,5 +9,8 @@
     "formats": [
       "esm-bundler"
     ]
+  },
+  "devDependencies": {
+    "@vue3/reactivity": "workspace:^1.0.0"
   }
 }

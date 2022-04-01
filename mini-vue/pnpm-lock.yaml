@@ -27,7 +27,10 @@ importers:
       '@vue3/shared': link:../shared
 
   packages/runtime-core:
-    specifiers: {}
+    specifiers:
+      '@vue3/reactivity': workspace:^1.0.0
+    devDependencies:
+      '@vue3/reactivity': link:../reactivity
 
   packages/runtime-dom:
     specifiers:

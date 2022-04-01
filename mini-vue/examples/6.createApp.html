@@ -10,27 +10,40 @@
 
 <body>
     <script src="../packages/runtime-dom/dist/runtime-dom.global.js"></script>
+    <script src="../packages/reactivity/dist/reactivity.global.js"></script>
     <div id="app"></div>
 
     <script>
         const { createApp, h } = VueRuntimeDOM;
+        const { reactive } = VueReactivity;
 
         const App = {
-            setup() {
+            setup(props, content) {
+                // console.log(props, content);
+
+                console.log("setup 函数");
                 const state = reactive({
-                    count: 0
+                    count: 100
                 });
 
+                // return {
+                //     state
+                // }
+
                 return () => {
+                    console.log(state.count);
                     return h("div", { style: { color: "red" }, xxx: "xxx" }, "hello" + state.count)
                 }
             },
+            // render(proxy) {
+            //     console.log(proxy.state.count);
+            //     return h("div", { style: { color: "red" }, xxx: "xxx" }, "hello" + proxy.state.count)
+            // }
         }
 
         const app = createApp(App, { name: "lq", age: 21 });
 
-        console.log(app);
-
+        // console.log(app);
         app.mount("#app");
     </script>
 </body>
