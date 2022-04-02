@@ -14,33 +14,43 @@
     <div id="app"></div>
 
     <script>
-        const { createApp, h } = VueRuntimeDOM;
-        const { reactive } = VueReactivity;
+        const { createApp, h, reactive, ref } = VueRuntimeDOM;
 
         const App = {
             setup(props, content) {
                 // console.log(props, content);
-
-                console.log("setup 函数");
+                console.log("setup 函数执行了");
                 const state = reactive({
                     count: 100
                 });
 
+                function handleClick() {
+                    state.count++;
+                }
+
                 // return {
-                //     state
+                //     state,
+                //     handleClick
                 // }
 
-                return () => {
-                    return h("div", { style: { color: "red" }, xxx: "xxx" },
-                        "hello" + state.count,
-                        h("div", h("div", "我是内容")),
-                        h("div"))
+                // return () => {
+                //     return h("div", { style: { color: "red" }, xxx: "xxx" },
+                //         "hello" + state.count,
+                //         h("div", h("div", {
+                //             onClick: () => handleClick()
+                //         }, "我是内容")),
+                //         h("span", { class: "test-class", style: { color: "red" } })
+                //     )
+                // }
+
+                return function () {
+                    return h("div", { onClick: handleClick }, `${state.count}`);
                 }
             },
-            // render(proxy) {
-            //     console.log(proxy.state.count);
-            //     return h("div", { style: { color: "red" }, xxx: "xxx" }, "hello" + proxy.state.count)
+            // render() {
+            //     return h("div", { onClick: this.handleClick }, this.state.count)
             // }
+
         }
 
         const app = createApp(App, { name: "lq", age: 21 });

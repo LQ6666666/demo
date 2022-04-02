@@ -2,9 +2,8 @@ import { ShapeFlags } from "@vue3/shared";
 import { ReactiveEffect } from "@vue3/reactivity";
 import { createAppAPI } from "./apiCreateApp";
 import { createComponentInstance, setupComponent } from "./component";
-import { VNode, createVNode, Text, normalizeVNode } from './vnode';
+import { VNode, Text, normalizeVNode } from './vnode';
 import { renderComponentRoot } from "./componentRenderUtils";
-import { isString } from '../../shared/src/index';
 
 export function createRenderer(options: any) {
     return baseCreateRenderer(options);
