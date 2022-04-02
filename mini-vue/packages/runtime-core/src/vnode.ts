@@ -1,5 +1,6 @@
 import { isString, ShapeFlags, isArray, isObject } from '@vue3/shared';
 
+export const Text = Symbol();
 
 export interface VNode {
     type: any,
@@ -69,4 +70,12 @@ function normalizeChildren(vnode: any, children: unknown) {
 
 export function isVNode(value: any): value is VNode {
     return value ? value.__v_isVNode === true : false
+}
+
+export function normalizeVNode(child: any): any {
+    if (isObject(child)) {
+        return child;
+    }
+
+    return createVNode(Text, null, String(child));
 }
