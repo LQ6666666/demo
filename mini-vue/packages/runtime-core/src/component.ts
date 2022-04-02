@@ -7,10 +7,11 @@ import { isPromise, isObject, NOOP } from '../../shared/src/index';
 import { PublicInstanceProxyHandlers } from './componentPublicInstance';
 
 // 组件中所有的类
-
+let uid = 0;
 export function createComponentInstance(vnode: VNode) {
     // 组件实例
     const instance = {
+        uid: uid++,
         vnode,
         type: vnode.type,
         ctx: {},

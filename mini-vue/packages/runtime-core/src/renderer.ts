@@ -4,6 +4,7 @@ import { createAppAPI } from "./apiCreateApp";
 import { createComponentInstance, setupComponent } from "./component";
 import { VNode, Text, normalizeVNode } from './vnode';
 import { renderComponentRoot } from "./componentRenderUtils";
+import { queueJob } from "./scheduler";
 
 export function createRenderer(options: any) {
     return baseCreateRenderer(options);
@@ -134,11 +135,14 @@ export function baseCreateRenderer(options: any) {
         }
 
         const effect = (instance.effect = new ReactiveEffect(componentUpdateFn, () => {
-            // 源码这里传入 scheduler 是为了加入任务队列的处理，等待调用
-            instance.update();
+            // 源码这里传入 scheduler 是为了加入任务队列的处理
+            // 自定义更新流程，降低更新频率
+            queueJob(instance.update);
         }));
 
-        const update = (instance.update = effect.run.bind(effect));
+        const update: any = (instance.update = effect.run.bind(effect));
+        update.id = instance.uid;
+
         update();
     }
 
