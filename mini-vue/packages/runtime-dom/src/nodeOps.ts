@@ -23,5 +23,7 @@ export const nodeOps = {
     // 设置文本内容
     setText: (node: Node, text: string) => {
         node.nodeValue = text;
-    }
+    },
+    // 下个兄弟节点
+    nextSibling: (node: Node) => node.nextSibling,
 } 

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="../packages/runtime-dom/dist/runtime-dom.global.js"></script>
+    <script src="../packages/reactivity/dist/reactivity.global.js"></script>
+    <div id="app"></div>
+
+    <script>
+        const { createApp, h, ref } = VueRuntimeDOM;
+
+        const App = {
+            setup(props, content) {
+                const flag = ref(true);
+
+                function handleClick() {
+                    flag.value = !flag.value;
+                }
+
+                setTimeout(handleClick, 1000);
+
+                return {
+                    flag,
+                    handleClick
+                }
+            },
+            // render() {
+            //     let result;
+            //     if (this.flag.value) {
+            //         result = h("span", { style: { color: "red" } }, "哈哈哈");
+            //     } else {
+            //         result = h("span", { style: { color: "green" } }, "呵呵呵");
+            //     }
+
+            //     return h(this.flag.value ? "div" : "div", null,
+            //         h("button", { onClick: this.handleClick }, "切换"),
+            //         result,
+            //     )
+            // }
+
+            render() {
+                let result;
+                if (this.flag.value) {
+                    result = h("ul", null, [
+                        h("li", { key: "a" }, "a"),
+                        // h("li", { key: "e" }, "e"),
+                        h("li", { key: "c" }, "c"),
+                        h("li", { key: "b" }, "b"),
+                        h("li", { key: "q", style: { color: "red" } }, "q"),
+                        h("li", { key: "f" }, "f"),
+                    ]);
+                } else {
+                    result = h("ul", null, [
+                        h("li", { key: "a" }, "a"),
+                        h("li", { key: "b" }, "b"),
+                        h("li", { key: "c" }, "c"),
+                        h("li", { key: "e", style: { color: "green" } }, "e"),
+                        h("li", { key: "h", style: { color: "green" } }, "h"),
+                        h("li", { key: "f" }, "f"),
+                    ]);
+                }
+
+                return result;
+            }
+        }
+
+        const app = createApp(App, { name: "lq", age: 21 });
+
+        // console.log(app);
+        app.mount("#app");
+    </script>
+</body>
+
+</html>
