@@ -23,6 +23,13 @@ export function createComponentInstance(vnode: VNode) {
         isUnmounted: false,
         render: null,
         effect: null,
+
+        bm: null,
+        m: null,
+        bu: null,
+        u: null,
+        bum: null,
+        um: null,
     }
 
     instance.ctx = { _: instance };
@@ -139,4 +146,13 @@ export function createSetupContext(instance: any) {
         emit: () => { },
         expose,
     }
+}
+
+export const enum LifecycleHooks {
+    BEFORE_MOUNT = 'bm',
+    MOUNTED = 'm',
+    BEFORE_UPDATE = 'bu',
+    UPDATED = 'u',
+    BEFORE_UNMOUNT = 'bum',
+    UNMOUNTED = 'um',
 }

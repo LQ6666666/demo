@@ -29,9 +29,10 @@ export const hasChanged = (value: any, oldValue: any) => !Object.is(value, oldVa
 const onRE = /^on[^a-z]/;
 export const isOn = (key: string): boolean => onRE.test(key);
 
-
-
-
-
+export const invokeArrayFns = (fns: Function[], arg?: any) => {
+    for (const fn of fns) {
+        fn(arg);
+    }
+}
 
 export * from "./shapeFlags";

@@ -1,4 +1,4 @@
-import { ShapeFlags } from "@vue3/shared";
+import { invokeArrayFns, ShapeFlags } from "@vue3/shared";
 import { ReactiveEffect } from "@vue3/reactivity";
 import { createAppAPI } from "./apiCreateApp";
 import { createComponentInstance, setupComponent } from "./component";
@@ -314,6 +314,10 @@ export function baseCreateRenderer(options: any) {
         const componentUpdateFn = () => {
             // 初次渲染
             if (!instance.isMounted) {
+                const { bm, m } = instance;
+                if (bm) {
+                    invokeArrayFns(bm);
+                }
                 // 在这个里面调用 render，不知道组件里面是啥，所以继续 patch
                 const subTree = (instance.subTree = renderComponentRoot(instance));
 
@@ -322,14 +326,30 @@ export function baseCreateRenderer(options: any) {
 
                 initialVNode.el = subTree.el;
 
+                if (m) {
+                   // mounted 必须要求在我们之间完成后才会调用 (暂不考虑子组件)
+                   invokeArrayFns(m);
+                }
+
                 instance.isMounted = true;
             } else {
+                const { bu, u } = instance;
+
+                if (bu) {
+                    invokeArrayFns(bu);
+                }
+
                 // 更新，再去调用 render 方法
                 const nextTree = renderComponentRoot(instance);
                 const prevTree = instance.subTree;
                 instance.subTree = nextTree;
 
                 patch(prevTree, nextTree, container);
+            
+                if (u) {
+                    // update 必须要求在我们之间完成后才会调用 
+                   invokeArrayFns(u);
+                 }
             }
         }
 
