@@ -252,6 +252,9 @@ export function baseCreateRenderer(options: any) {
             // 最后移动节点，并且将新增的节点插入
             // console.log(toBePatched);
             // console.log(newIndexToOldIndexMap);
+            const increasingNewIndexSequence = getSequence(newIndexToOldIndexMap);
+            let j = increasingNewIndexSequence.length - 1;// 取出最后一个人的索引
+
             for (let i = toBePatched - 1; i >= 0; i--) {
                 const nextIndex = s2 + i;
                 const nextChild = c2[nextIndex];
@@ -261,11 +264,16 @@ export function baseCreateRenderer(options: any) {
                 if (newIndexToOldIndexMap[i] === 0) {
                     patch(null, nextChild, container, anchor);
                 } else {
-                    // 最长递增子序列
                     // [1,2,3,4,5,6]
                     // [1,6,2,3,4,5]
                     // 这种操作，需要将节点全部移动一遍
-                    hostInsert(nextChild.el, container, anchor);
+
+                    // 最长递增子序列（优化）
+                    if (i !== increasingNewIndexSequence[j]) {
+                        hostInsert(nextChild.el, container, anchor);
+                    } else {
+                        j++;
+                    }
                 }
             }
         }
@@ -406,4 +414,48 @@ export function baseCreateRenderer(options: any) {
         render,
         createApp: createAppAPI(render)
     }
+}
+
+
+// TODO: 最长递增序列没看懂
+// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+function getSequence(arr: number[]): number[] {
+    const p = arr.slice()
+    const result = [0]
+    let i, j, u, v, c
+    const len = arr.length
+    for (i = 0; i < len; i++) {
+        const arrI = arr[i]
+        if (arrI !== 0) {
+            j = result[result.length - 1]
+            if (arr[j] < arrI) {
+                p[i] = j
+                result.push(i)
+                continue
+            }
+            u = 0
+            v = result.length - 1
+            while (u < v) {
+                c = (u + v) >> 1
+                if (arr[result[c]] < arrI) {
+                    u = c + 1
+                } else {
+                    v = c
+                }
+            }
+            if (arrI < arr[result[u]]) {
+                if (u > 0) {
+                    p[i] = result[u - 1]
+                }
+                result[u] = i
+            }
+        }
+    }
+    u = result.length
+    v = result[u - 1]
+    while (u-- > 0) {
+        result[u] = v
+        v = p[v]
+    }
+    return result
 }
