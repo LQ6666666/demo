@@ -93,3 +93,7 @@ class ObjectRefImpl<T extends object, K extends keyof T> {
         this._object[this._key] = newVal;
     }
 }
+
+export function isRef(r: any): boolean {
+    return !!(r?.__v_isRef === true);
+}

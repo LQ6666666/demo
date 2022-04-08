@@ -1,4 +1,5 @@
 export const NOOP = () => { };
+export const EMPTY_OBJ = {};
 
 export const isObject = (val: unknown): val is Record<any, any> => typeof val === "object" && val !== null;
 
@@ -18,6 +19,16 @@ export const isPromise = <T = any>(val: unknown): val is Promise<T> => {
     return isObject(val) && isFunction(val.then) && isFunction(val.catch)
 }
 
+export const isMap = (val: unknown): val is Map<any, any> =>
+    toTypeString(val) === '[object Map]';
+
+export const isSet = (val: unknown): val is Set<any> =>
+    toTypeString(val) === '[object Set]';
+
+/** 是不是普通对象 */
+export const isPlainObject = (val: unknown): val is object =>
+    toTypeString(val) === '[object Object]'
+
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export const hasOwn = (
     val: object,
@@ -34,5 +45,9 @@ export const invokeArrayFns = (fns: Function[], arg?: any) => {
         fn(arg);
     }
 }
+
+export const objectToString = Object.prototype.toString;
+export const toTypeString = (value: unknown): string =>
+    objectToString.call(value);
 
 export * from "./shapeFlags";

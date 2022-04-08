@@ -31,17 +31,23 @@ export function effect(fn: any, options: any) {
 }
 
 export class ReactiveEffect<T = any> {
-    public dep: Set<ReactiveEffect>[];
+    public deps: Set<ReactiveEffect>[];
     computed?: ComputedRefImpl<T>;
+    active = true;
+    onStop?: () => void;
 
     constructor(
         public fn: () => T,
         public scheduler: any | null = null
     ) {
-        this.dep = [];
+        this.deps = [];
     }
 
     run() {
+        if (!this.active) {
+            return this.fn();
+        }
+
         // 保证 effect 没有加入到 effectStack
         if (!effectStack.includes(this)) {
             try {
@@ -53,6 +59,14 @@ export class ReactiveEffect<T = any> {
                 effectStack.pop();
                 activeEffect = effectStack.at(-1);
             }
+        }
+    }
+
+    stop() {
+        if (this.active) {
+            cleanupEffect(this);
+            this.onStop?.();
+            this.active = false;
         }
     }
 }
@@ -77,7 +91,7 @@ export function track(target: object, type: TrackOpTypes, key: unknown) {
 export function trackEffects(dep: Set<ReactiveEffect>) {
     if (!dep.has(activeEffect!)) {
         dep.add(activeEffect!);
-        activeEffect!.dep.push(dep);
+        activeEffect!.deps.push(dep);
     }
 }
 
@@ -144,3 +158,14 @@ export function triggerEffects(effects: Set<ReactiveEffect>) {
  *  state.address = xxx
  * })
  */
+
+function cleanupEffect(effect: ReactiveEffect) {
+    const { deps } = effect;
+    if (deps.length) {
+        for (const dep of deps) {
+            dep.delete(effect);
+        }
+
+        deps.length = 0;
+    }
+}

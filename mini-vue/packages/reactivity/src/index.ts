@@ -3,7 +3,9 @@ export {
     reactive,
     readonly,
     shallowReactive,
-    shallowReadonly
+    shallowReadonly,
+    toRaw,
+    isReactive
 } from "./reactive";
 
 export {
@@ -16,6 +18,7 @@ export {
     shallowRef,
     toRef,
     toRefs,
+    isRef
 } from "./ref";
 
 export {

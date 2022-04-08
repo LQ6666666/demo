@@ -370,6 +370,8 @@ export function baseCreateRenderer(options: any) {
         // 判断卸载类型
         if (shapeFlag & ShapeFlags.COMPONENT) {
             console.log("component unmount");
+
+            vnode.component!.isUnmounted = true
         } else {
             hostRemove(el);
         }

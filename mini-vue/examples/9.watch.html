@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="../packages/runtime-dom/dist/runtime-dom.global.js"></script>
+    <script src="../packages/reactivity/dist/reactivity.global.js"></script>
+    <div id="app"></div>
+
+    <script>
+        const { createApp, h, reactive, ref, watch, watchEffect } = VueRuntimeDOM;
+
+        const App = {
+            setup(props, content) {
+                const state = reactive({});
+                const count = ref(0);
+
+                function handleClick() {
+                    count.value++;
+                }
+
+                // watch(count, (newValue, oldValue, onCleanup) => {
+                //     console.log(newValue, oldValue, onCleanup);
+                // }, {
+                //     immediate: true
+                // });
+
+                const stop = watchEffect((onCleanup) => {
+                    if (count.value === 2) {
+                        onCleanup(() => {
+                            console.log("------");
+                        });
+                    }
+                });
+                setTimeout(() => {
+                    stop()
+                }, 5000);
+
+                return function () {
+                    return h("div", null, [
+                        h("h2", null, count.value),
+                        h("button", {
+                            onClick: handleClick
+                        }, "+1")
+                    ]);
+                }
+            },
+        }
+
+        const app = createApp(App, { name: "lq", age: 21 });
+
+        app.mount("#app");
+    </script>
+</body>
+
+</html>

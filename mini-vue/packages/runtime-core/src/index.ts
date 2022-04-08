@@ -26,4 +26,9 @@ export {
     readonly,
 } from "@vue3/reactivity";
 
+export {
+    watch,
+    watchEffect
+} from './apiWatch';
+
 

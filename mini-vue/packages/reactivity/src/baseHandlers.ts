@@ -18,15 +18,22 @@ const shallowSet = createSetter();
 // 拦截获取
 function createGetter(isReadonly = false, shallow = false) {
     return function get(target: object, key: string | symbol, receiver: object) {
+        // key 为 IS_REACTIVE 时，返回是不是 reactive 对象
+        if (key === ReactiveFlags.IS_REACTIVE) {
+            // 走到这里一定是 readonly 或者 reactive，判断是不是 只读即可
+            return !isReadonly;
+        } else if (key === ReactiveFlags.IS_READONLY) {
+            return isReadonly;
+        }
         // key 为 ReactiveFlags.RAW 时，返回原对象
-        if (key === ReactiveFlags.RAW && receiver ===
+        else if (key === ReactiveFlags.RAW && receiver ===
             (isReadonly
                 ? shallow
-                  ? shallowReadonlyMap
-                  : readonlyMap
+                    ? shallowReadonlyMap
+                    : readonlyMap
                 : shallow
-                  ? shallowReactiveMap
-                  : reactiveMap
+                    ? shallowReactiveMap
+                    : reactiveMap
             ).get(target)) {
             return target;
         }

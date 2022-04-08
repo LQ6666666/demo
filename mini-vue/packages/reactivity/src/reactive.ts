@@ -66,3 +66,15 @@ export const enum ReactiveFlags {
     IS_SHALLOW = '__v_isShallow',
     RAW = '__v_raw'// 用来获取原对象，通过访问这个属性到 get 方法里，就能拿到 get函数参数里的 target（原对象）
 }
+
+export function isReadonly(value: unknown): boolean {
+    // 访问对应的属性即可，这些属性其实不在代理上，只是在 getter 时特殊判断 key
+    return !!(value && (value as any)[ReactiveFlags.IS_READONLY])
+}
+
+export function isReactive(value: unknown): boolean {
+    if (isReadonly(value)) {
+        return isReactive((value as any)[ReactiveFlags.RAW])
+    }
+    return !!(value && (value as any)[ReactiveFlags.IS_REACTIVE])
+}
