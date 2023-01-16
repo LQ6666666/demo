@@ -1,0 +1,32 @@
+{
+  "name": "webpack-plain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/webpack.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "npm run build && cd src/test && node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/generator": "^7.20.4",
+    "@babel/parser": "^7.20.3",
+    "@babel/traverse": "^7.20.1",
+    "@rollup/plugin-commonjs": "^23.0.3",
+    "@rollup/plugin-json": "^5.0.2",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@types/babel-types": "^7.0.11",
+    "@types/babel__generator": "^7.6.4",
+    "@types/babel__traverse": "^7.18.2",
+    "@types/node": "^18.11.9",
+    "babel-types": "^6.26.0",
+    "rollup": "^3.5.0",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "tapable": "^2.2.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
+  }
+}
