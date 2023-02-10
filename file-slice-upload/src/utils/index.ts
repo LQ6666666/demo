@@ -1,41 +1,39 @@
-/**
- * 
- * @param poolLimit 限制的并发数
- * @param array 表示任务数组
- * @param iteratorFn 表示迭代函数，用于实现对每个任务项进行处理
- * @returns 该函数会返回一个 Promise 对象或异步函数
- */
-async function asyncPool<T>(poolLimit: number, array: T[], iteratorFn: (item: T, array: T[]) => Promise<any>) {
-    const ret = []; // 存储所有的异步任务
-    const executing: any[] = []; // 存储正在执行的异步任务
+import { CHUNK_SIZE } from "@/constants";
 
-    for (const item of array) {
-        // 调用iteratorFn函数创建异步任务
-        const p = Promise.resolve().then(() => iteratorFn(item, array));
-        ret.push(p); // 保存新的异步任务
+export { asyncPool } from "./async-pool";
 
-        // 当 poolLimit 值小于或等于总任务个数时，进行并发控制
-        if (poolLimit <= array.length) {
-            // 当任务完成后，从正在执行的任务数组中移除已完成的任务
-            const e: any = p.then(() => executing.splice(executing.indexOf(e), 1));
+export const createFileChunk = (file: File, chunkSize = CHUNK_SIZE) => {
+  const fileChunks: Blob[] = [];
 
-            executing.push(e); // 保存正在执行的异步任务
+  for (let cur = 0; cur < file.size; cur += chunkSize) {
+    fileChunks.push(file.slice(cur, cur + CHUNK_SIZE));
+  }
 
-            if (executing.length >= poolLimit) {
-                await Promise.race(executing); // 等待较快的任务执行完成
-            }
-        }
-    }
+  return fileChunks;
+};
 
-    return Promise.all(ret);
-}
+export const calculateFileHash = (
+  fileChunks: Blob[],
+  onProgress?: (percentage: number) => void
+) => {
+  return new Promise<string>((resolve, reject) => {
+    const worker = new Worker(new URL("@/assets/web-worker/hash.js", import.meta.url), {
+      type: "module"
+    });
 
+    worker.postMessage({ fileChunks });
 
-const delay = (...args: any[]) => new Promise((resolve) => {
-    setTimeout(resolve, 1000, ...args);
-})
+    worker.onmessage = e => {
+      const { hash, percentage } = e.data as { hash: string | undefined; percentage: number };
+      if (hash) {
+        onProgress?.(100);
+        resolve(hash);
+        worker.terminate();
+      } else {
+        onProgress?.(percentage);
+      }
+    };
 
-export {
-    asyncPool,
-    delay
-}
+    worker.onerror = e => reject(e);
+  });
+};
