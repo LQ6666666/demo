@@ -26,7 +26,7 @@ export function computed<T>(getterOrOptions: any) {
 export class ComputedRefImpl<T> {
     private _value!: T;
     public readonly effect: ReactiveEffect<T>;
-    public readonly [ReactiveFlags.IS_READONLY]: boolean;
+    public readonly [ReactiveFlags.IS_READONLY]: boolean = false;
     // _dirty：记录依赖是否变化
     public _dirty = true;
 
