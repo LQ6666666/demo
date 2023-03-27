@@ -19,6 +19,7 @@ export default defineComponent({
       required: true
     }
   },
+  inheritAttrs: true,
   setup(props) {
     const blockStyle = computed<CSSProperties>(() => ({
       top: `${props.block.top}px`,
@@ -40,13 +41,20 @@ export default defineComponent({
         props.block.left = props.block.left - offsetWidth / 2;
         props.block.alignCenter = false;
       }
+
+      props.block.width = offsetWidth
+      props.block.height = offsetHeight
     });
 
     return () => {
       const component = config.componentMap[props.block.key];
       const RenderComponent = component.render();
       return (
-        <div class="editor-block" style={blockStyle.value} ref={blockRef}>
+        <div
+          class={{ "editor-block": true, "editor-block-focus": !!props.block.focus }}
+          style={blockStyle.value}
+          ref={blockRef}
+        >
           {RenderComponent}
         </div>
       );

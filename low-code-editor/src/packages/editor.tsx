@@ -1,6 +1,6 @@
 import { computed, defineComponent, type PropType, CSSProperties, inject, ref } from "vue";
 import { cloneDeep } from "lodash-es";
-import { type EditorData } from "./editor-types";
+import { type Block, type EditorData } from "./editor-types";
 
 import EditorBlock from "./editor-block";
 
@@ -8,6 +8,9 @@ import "./editor.scss";
 import { configKey } from "@/utils/injection-key";
 import { type EditorComponent } from "@/utils/editor-config";
 import { useMenuDragger } from "./useMenuDragger";
+import { useFocus } from "./useFocus";
+import { useBlockDragger } from "./useBlockDragger";
+import { useCommand } from "./useCommand";
 
 export default defineComponent({
   props: {
@@ -35,9 +38,33 @@ export default defineComponent({
     }));
 
     const containerRef = ref<HTMLElement>();
-    // 实现菜单的拖拽功能
+    // 1.实现菜单的拖拽功能
     const { dragstart, dragend } = useMenuDragger(containerRef, data);
 
+    // 2. 实现获取焦点,选中后可能就直接进行拖拽了
+    const { blockMousedown, focusData, containerMousedown, lastSelectBlock } = useFocus(data, e => {
+      mousedown(e);
+    });
+
+    // 3. 实现拖拽多个元素的功能
+    const { mousedown, markLine } = useBlockDragger(focusData, lastSelectBlock, data);
+
+    const { commands } = useCommand(data);
+
+    const buttons = [
+      {
+        label: "撤销",
+        handler: () => {
+          commands.undo();
+        }
+      },
+      {
+        label: "重做",
+        handler: () => {
+          commands.redo();
+        }
+      }
+    ];
 
     return () => (
       <div class="editor">
@@ -57,7 +84,16 @@ export default defineComponent({
           ))}
         </div>
 
-        <div class="editor-top">菜单栏</div>
+        <div class="editor-top">
+          {buttons.map((btn, index) => {
+            return (
+              <div class="editor-top-button" onClick={btn.handler}>
+                {/* <i class="ny"></i> */}
+                <span>{btn.label}</span>
+              </div>
+            );
+          })}
+        </div>
         <div class="editor-right">属性栏</div>
         <div class="editor-container">
           {/* 负责产生滚动条 */}
@@ -67,10 +103,19 @@ export default defineComponent({
               ref={containerRef}
               style={containerStyles.value}
               class="editor-container-canvas__content"
+              onMousedown={containerMousedown}
             >
-              {data.value.blocks.map(block => (
-                <EditorBlock block={block} />
+              {data.value.blocks.map((block, index) => (
+                <EditorBlock
+                  block={block}
+                  onMousedown={(e: MouseEvent) => blockMousedown(e, block, index)}
+                />
               ))}
+
+              {markLine.x !== null && (
+                <div class="line-x" style={{ left: markLine.x + "px" }}></div>
+              )}
+              {markLine.y !== null && <div class="line-y" style={{ top: markLine.y + "px" }}></div>}
             </div>
           </div>
         </div>

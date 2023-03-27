@@ -1,6 +1,7 @@
 import { type EditorComponent } from "@/utils/editor-config";
 import { type Ref, type WritableComputedRef } from "vue";
 import { type EditorData } from "./editor-types";
+import { events } from "./events";
 
 export const useMenuDragger = (
   containerRef: Ref<HTMLElement | undefined>,
@@ -60,6 +61,8 @@ export const useMenuDragger = (
     containerRef.value!.addEventListener("drop", drop);
 
     currentDragComponent = component;
+    // 发布 start
+    events.emit("start");
   };
 
   const dragend = () => {
@@ -67,6 +70,9 @@ export const useMenuDragger = (
     containerRef.value!.removeEventListener("dragover", dragover);
     containerRef.value!.removeEventListener("dragleave", dragleave);
     containerRef.value!.removeEventListener("drop", drop);
+
+    // 发布 end
+    events.emit("end");
   };
 
   return { dragstart, dragend };
