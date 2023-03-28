@@ -17,6 +17,10 @@ export default defineComponent({
     block: {
       type: Object as PropType<Block>,
       required: true
+    },
+    preview: {
+      type: Boolean,
+      required: true
     }
   },
   inheritAttrs: true,
@@ -42,8 +46,8 @@ export default defineComponent({
         props.block.alignCenter = false;
       }
 
-      props.block.width = offsetWidth
-      props.block.height = offsetHeight
+      props.block.width = offsetWidth;
+      props.block.height = offsetHeight;
     });
 
     return () => {
@@ -51,7 +55,11 @@ export default defineComponent({
       const RenderComponent = component.render();
       return (
         <div
-          class={{ "editor-block": true, "editor-block-focus": !!props.block.focus }}
+          class={{
+            "editor-block": true,
+            "editor-block-focus": !!props.block.focus,
+            "editor-block-preview": props.preview
+          }}
           style={blockStyle.value}
           ref={blockRef}
         >

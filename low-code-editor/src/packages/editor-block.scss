@@ -16,3 +16,9 @@
     border: 1px dashed red;
   }
 }
+
+.editor-block-preview {
+  &::after {
+    content: none;
+  }
+}

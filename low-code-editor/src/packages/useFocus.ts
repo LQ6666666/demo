@@ -1,8 +1,9 @@
-import { computed, ref, type WritableComputedRef } from "vue";
+import { computed, type Ref, ref, type WritableComputedRef } from "vue";
 import type { Block, EditorData } from "./editor-types";
 
 export const useFocus = (
   data: WritableComputedRef<EditorData>,
+  previewRef: Ref<boolean>,
   callback: (e: MouseEvent) => void
 ) => {
   // 表示没有任何一个被选中
@@ -15,6 +16,8 @@ export const useFocus = (
   };
 
   const blockMousedown = (e: MouseEvent, block: Block, index: number) => {
+    if (previewRef.value) return;
+
     e.preventDefault();
     e.stopPropagation();
 
@@ -48,6 +51,8 @@ export const useFocus = (
   });
 
   const containerMousedown = () => {
+    if (previewRef.value) return;
+
     // 点击容器让选中的失去焦点
     clearBlockFocus();
     selectedIndex.value = -1;

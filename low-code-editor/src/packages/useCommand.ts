@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash-es";
-import { onUnmounted, WritableComputedRef } from "vue";
+import { ComputedRef, onUnmounted, WritableComputedRef } from "vue";
 import { Block, EditorData } from "./editor-types";
 import { events } from "./events";
 
@@ -7,14 +7,20 @@ type Command = {
   name: string;
   keyboard?: string;
   pushQueue?: boolean;
-  execute: () => ExecuteReturnType;
+  execute: (...args: any[]) => ExecuteReturnType;
   init?: () => () => void;
   before?: null | Block[];
 };
 
 type ExecuteReturnType = { redo?: () => void; undo?: () => void };
 
-export const useCommand = (data: WritableComputedRef<EditorData>) => {
+export const useCommand = (
+  data: WritableComputedRef<EditorData>,
+  focusData: ComputedRef<{
+    focus: Block[];
+    unfocused: Block[];
+  }>
+) => {
   // 前进后退需要指针
   const state = {
     // 前进后退的索引值
@@ -33,8 +39,8 @@ export const useCommand = (data: WritableComputedRef<EditorData>) => {
   const register = (command: Command) => {
     state.commandArray.push(command);
     // 命令名字对应的执行函数
-    state.commands[command.name] = () => {
-      const { redo, undo } = command.execute();
+    state.commands[command.name] = (...args: any[]) => {
+      const { redo, undo } = command.execute(...args);
       redo?.();
 
       // 不需要放到队列中直接跳到即可
@@ -128,6 +134,140 @@ export const useCommand = (data: WritableComputedRef<EditorData>) => {
         },
         undo() {
           // 前一步
+          data.value = { ...data.value, blocks: before };
+        }
+      };
+    }
+  });
+
+  // 更新整个容器
+  register({
+    name: "updateContainer",
+    pushQueue: true,
+    execute(val) {
+      const before = data.value;
+      const after = val;
+
+      return {
+        redo() {
+          data.value = after;
+        },
+        undo() {
+          data.value = before;
+        }
+      };
+    }
+  });
+
+  // 更新一个
+  register({
+    name: "updateBlock",
+    pushQueue: true,
+    execute(newBlock, oldBlock) {
+      const before = data.value.blocks;
+      const after = (() => {
+        const blocks = [...data.value.blocks];
+        const index = data.value.blocks.indexOf(oldBlock);
+        if (index > -1) {
+          blocks.splice(index, 1, newBlock);
+        }
+        return blocks;
+      })();
+
+      return {
+        redo() {
+          data.value = { ...data.value, blocks: after };
+        },
+        undo() {
+          data.value = { ...data.value, blocks: before };
+        }
+      };
+    }
+  });
+
+  register({
+    // 更新整个容器
+    name: "placeTop",
+    pushQueue: true,
+    execute() {
+      const before = cloneDeep(data.value.blocks);
+      // 置顶就是在所有的 blocks 中找到最大的
+      const after = (() => {
+        const { focus, unfocused } = focusData.value;
+
+        let maxZIndex = unfocused.reduce((prev, block) => {
+          return Math.max(prev, block.zIndex);
+        }, Number.MIN_SAFE_INTEGER);
+
+        // 让当前选中的比最大的 + 1
+        focus.forEach(block => (block.zIndex = maxZIndex + 1));
+
+        return data.value.blocks;
+      })();
+
+      return {
+        redo() {
+          data.value = { ...data.value, blocks: after };
+        },
+        undo() {
+          data.value = { ...data.value, blocks: before };
+        }
+      };
+    }
+  });
+
+  register({
+    // 更新整个容器
+    name: "placeBottom",
+    pushQueue: true,
+    execute() {
+      const before = cloneDeep(data.value.blocks);
+      // 置顶就是在所有的 blocks 中找到最大的
+      const after = (() => {
+        const { focus, unfocused } = focusData.value;
+
+        let minZIndex =
+          unfocused.reduce((prev, block) => {
+            return Math.min(prev, block.zIndex);
+          }, Number.MAX_SAFE_INTEGER) - 1;
+
+        if (minZIndex < 0) {
+          const dur = Math.abs(minZIndex);
+          minZIndex = 0;
+          unfocused.forEach(block => (block.zIndex += dur));
+        }
+
+        // 不能直接 - 1 ，负值可能看不到
+        focus.forEach(block => (block.zIndex = minZIndex));
+
+        return data.value.blocks;
+      })();
+
+      return {
+        redo() {
+          data.value = { ...data.value, blocks: after };
+        },
+        undo() {
+          data.value = { ...data.value, blocks: before };
+        }
+      };
+    }
+  });
+
+  register({
+    name: "delete",
+    pushQueue: true,
+    execute() {
+      const before = cloneDeep(data.value.blocks);
+      const after = focusData.value.unfocused;
+
+      console.log(before, after);
+
+      return {
+        redo() {
+          data.value = { ...data.value, blocks: after };
+        },
+        undo() {
           data.value = { ...data.value, blocks: before };
         }
       };

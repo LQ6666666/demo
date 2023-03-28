@@ -120,7 +120,6 @@ export const useBlockDragger = (
       // 获取每一根线
       const { top: t, showTop: s } = dragState.lines.y[i];
       // 如果小于 5 说明接近了
-      console.log(Math.abs(t - top));
       if (Math.abs(t - top) <= 5) {
         y = s;
         // 实现快速和这个元素贴在一起
