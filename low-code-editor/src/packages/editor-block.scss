@@ -22,3 +22,9 @@
     content: none;
   }
 }
+
+.el-button,
+.el-input,
+.el-select {
+  transition: none !important;
+}

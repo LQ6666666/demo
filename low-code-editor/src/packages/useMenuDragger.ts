@@ -41,7 +41,9 @@ export const useMenuDragger = (
           zIndex: 1,
           key: currentDragComponent!.key,
           // 希望松手的时候 可以居中
-          alignCenter: true
+          alignCenter: true,
+          props: {},
+          model: {}
         }
       ]
     };

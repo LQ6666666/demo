@@ -10,6 +10,8 @@ import {
 import { type Block } from "./editor-types";
 import { configKey } from "@/utils/injection-key";
 
+import BlockResize from "./block-resize";
+
 import "./editor-block.scss";
 
 export default defineComponent({
@@ -20,6 +22,10 @@ export default defineComponent({
     },
     preview: {
       type: Boolean,
+      required: true
+    },
+    formData: {
+      type: Object,
       required: true
     }
   },
@@ -52,7 +58,24 @@ export default defineComponent({
 
     return () => {
       const component = config.componentMap[props.block.key];
-      const RenderComponent = component.render();
+
+      const RenderComponent = component.render({
+        size: props.block.hasResize ? {width:props.block.width, height:props.block.height} :{},
+        props: props.block.props,
+        model: Object.keys(component.model ?? {}).reduce((prev: any, modelName) => {
+          const propName = props.block.model[modelName];
+
+          prev[modelName] = {
+            modelValue: props.formData[propName],
+            "onUpdate:modelValue": (v: any) => (props.formData[propName] = v)
+          };
+
+          return prev;
+        }, {})
+      });
+
+      const { width, height }: Record<string, boolean | undefined> = component.resize || {};
+
       return (
         <div
           class={{
@@ -64,6 +87,10 @@ export default defineComponent({
           ref={blockRef}
         >
           {RenderComponent}
+
+          {props.block.focus && (width || height) && (
+            <BlockResize block={props.block} component={component} />
+          )}
         </div>
       );
     };

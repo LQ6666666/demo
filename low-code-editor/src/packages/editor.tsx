@@ -3,6 +3,7 @@ import { cloneDeep } from "lodash-es";
 import { type Block, type EditorData } from "./editor-types";
 
 import EditorBlock from "./editor-block";
+import EditorOperator from "./editor-operator";
 
 import "./editor.scss";
 import { configKey } from "@/utils/injection-key";
@@ -19,6 +20,10 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Object as PropType<EditorData>,
+      required: true
+    },
+    formData: {
+      type: Object,
       required: true
     }
   },
@@ -192,7 +197,16 @@ export default defineComponent({
               );
             })}
           </div>
-          <div class="editor-right">属性栏</div>
+
+          <div class="editor-right">
+            <EditorOperator
+              block={lastSelectBlock.value}
+              data={data.value}
+              updateContainer={commands["updateContainer"]}
+              updateBlock={commands["updateBlock"]}
+            ></EditorOperator>
+          </div>
+
           <div class="editor-container">
             {/* 负责产生滚动条 */}
             <div class="editor-container-canvas">
@@ -206,6 +220,7 @@ export default defineComponent({
                 {data.value.blocks.map((block, index) => (
                   <EditorBlock
                     block={block}
+                    formData={props.formData}
                     preview={previewRef.value}
                     onMousedown={(e: MouseEvent) => blockMousedown(e, block, index)}
                     onContextmenu={(e: MouseEvent) => onContextmenuBlock(e, block)}
@@ -230,7 +245,7 @@ export default defineComponent({
             class="editor-container-canvas__content"
           >
             {data.value.blocks.map(block => (
-              <EditorBlock block={block} preview={previewRef.value} />
+              <EditorBlock block={block} preview={previewRef.value} formData={props.formData} />
             ))}
           </div>
           <ElButton

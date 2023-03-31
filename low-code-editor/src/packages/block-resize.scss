@@ -1,0 +1,48 @@
+.block-resize {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: rgb(15, 65, 204);
+  z-index: 1000;
+  user-select: none;
+}
+
+.block-resize-top {
+  top: -4px;
+  left: calc(50% - 4px);
+}
+
+.block-resize-bottom {
+  bottom: -4px;
+  left: calc(50% - 4px);
+}
+
+.block-resize-left {
+  left: -4px;
+  top: calc(50% - 4px);
+}
+
+.block-resize-right {
+  right: -4px;
+  top: calc(50% - 4px);
+}
+
+.block-resize-top-left {
+    top: -4px;
+    left: -4px;
+}
+
+.block-resize-top-right {
+    top: -4px;
+    right: -4px;
+}
+
+.block-resize-bottom-left {
+    bottom: -4px;
+    left: -4px;
+}
+
+.block-resize-bottom-right {
+    bottom: -4px;
+    right: -4px;
+}

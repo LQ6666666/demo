@@ -15,6 +15,10 @@ export interface Block {
   focus?: boolean;
   width?: number;
   height?: number;
+  props: Record<string, any>;
+  model: Record<string, any>;
+
+  [key: string]: any;
 }
 
 export interface Container {

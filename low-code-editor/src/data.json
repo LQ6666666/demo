@@ -8,19 +8,31 @@
       "top": 100,
       "left": 100,
       "zIndex": 1,
-      "key": "text"
+      "key": "text",
+      "props": {
+        "text": "文字内容",
+        "color": "#ff0000",
+        "size": "14px"
+      }
     },
     {
       "top": 200,
       "left": 200,
       "zIndex": 1,
-      "key": "button"
+      "key": "button",
+      "props": {
+        "text": "按钮啊啊",
+        "type": "primary",
+        "size": "small"
+      }
     },
     {
       "top": 300,
       "left": 300,
       "zIndex": 1,
-      "key": "input"
+      "key": "input",
+      "props": {},
+      "model": {}
     }
   ]
 }

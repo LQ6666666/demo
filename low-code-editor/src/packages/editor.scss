@@ -110,3 +110,19 @@
   right: 0;
   border-top: 1px dashed red;
 }
+
+.range {
+  display: inline-flex;
+  width: 220px;
+  min-height: 32px;
+  align-items: center;
+
+  input {
+    width: 100%;
+  }
+
+  span {
+    margin: 0 4px;
+    display: inline-flex;
+  }
+}
