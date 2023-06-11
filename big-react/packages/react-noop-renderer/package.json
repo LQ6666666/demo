@@ -1,0 +1,17 @@
+{
+  "name": "@react/react-noop-renderer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "module": "index.esm.js",
+  "dependencies": {
+    "@react/react-reconciler": "workspace:^",
+    "@react/shared": "workspace:^"
+  },
+  "peerDependencies": {
+    "react": "workspace:^"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

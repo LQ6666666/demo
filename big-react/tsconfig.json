@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "bundler",
+    "allowArbitraryExtensions": true,
+    "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    // 模块至少包括 export import 中一个
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": false,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "paths": {
+      "@react/*": ["packages/*/src"],
+      "react": ["packages/react/src"],
+      "react-dom": ["packages/react-dom/src"],
+      "hostConfig": ["packages/react-dom/src/hostConfig.ts"]
+    }
+  },
+  "include": ["packages/**/*.ts", "packages/**/*.d.ts", "packages/**/*.tsx"]
+}

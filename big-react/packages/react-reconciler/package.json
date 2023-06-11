@@ -1,0 +1,13 @@
+{
+  "name": "@react/react-reconciler",
+  "version": "1.0.0",
+  "description": "React协调器",
+  "main": "index.js",
+  "module": "index.esm.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react/shared": "workspace:^"
+  }
+}

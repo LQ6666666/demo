@@ -1,0 +1,20 @@
+{
+  "name": "react-dom",
+  "version": "1.0.0",
+  "description": "React 浏览器环境包",
+  "main": "index.js",
+  "module": "index.esm.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react/react-reconciler": "workspace:^",
+    "@react/shared": "workspace:^"
+  },
+  "devDependencies": {
+    "react": "workspace:^"
+  },
+  "peerDependencies": {
+    "react": "workspace:^"
+  }
+}

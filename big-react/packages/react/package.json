@@ -1,0 +1,13 @@
+{
+  "name": "react",
+  "version": "1.0.0",
+  "description": "react 公用方法",
+  "main": "index.js",
+  "module": "index.esm.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react/shared": "workspace:^"
+  }
+}
